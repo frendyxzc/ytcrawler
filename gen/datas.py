@@ -1,10 +1,16 @@
+# -*- coding: utf-8 -*-
 import json
 
 def gen_default_config():
     ret = {}
 
     ret["home"] = gen_home()
+    # key必须对应home content里的id
     ret["genres"] = gen_genres()
+    ret["artists"] = gen_artists()
+    ret["activities"] = gen_activities()
+    ret["moods"] = gen_moods()
+    # 相关YT播放列表
     ret["list"] = gen_list()
 
     return ret
@@ -14,12 +20,12 @@ def gen_default_config():
 Home
 """
 
-HOME_CONTENT_ID = "PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI,category_1"
-HOME_CONTENT_NAME = "HOT,NEW"
-HOME_CONTENT_IMAGE = ","
-HOME_CONTENT_VIEW_TYPE = "0,1"
-HOME_CONTENT_ACTION_TYPE = "1,0"
-HOME_CONTENT_ITEM_NUM = "5,5"
+HOME_CONTENT_ID = "PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI"
+HOME_CONTENT_NAME = "HOT"
+HOME_CONTENT_IMAGE = ""
+HOME_CONTENT_VIEW_TYPE = "0"
+HOME_CONTENT_ACTION_TYPE = "1"
+HOME_CONTENT_ITEM_NUM = "5"
 
 def gen_home():
     home = {}
@@ -64,14 +70,46 @@ Genres
 """
 
 def gen_genres():
-
     GENRES_ID = read_file_to_list("genres_id")
     GENRES_NAME = read_file_to_list("genres_name")
     GENRES_IMAGE = []
 
-    return gen_genres_detail(GENRES_ID, GENRES_NAME, GENRES_IMAGE)
+    return gen_content_detail(GENRES_ID, GENRES_NAME, GENRES_IMAGE)
 
-def gen_genres_detail(ID, NAME, IMAGE):
+"""
+Artists
+"""
+
+def gen_artists():
+    ARTISTS_ID = read_file_to_list("artists_id")
+    ARTISTS_NAME = read_file_to_list("artists_name")
+    ARTISTS_IMAGE = []
+
+    return gen_content_detail(ARTISTS_ID, ARTISTS_NAME, ARTISTS_IMAGE)
+
+"""
+Activities
+"""
+
+def gen_activities():
+    ACTIVITIES_ID = read_file_to_list("activities_id")
+    ACTIVITIES_NAME = read_file_to_list("activities_name")
+    ACTIVITIES_IMAGE = []
+
+    return gen_content_detail(ACTIVITIES_ID, ACTIVITIES_NAME, ACTIVITIES_IMAGE)
+
+"""
+Moods
+"""
+
+def gen_moods():
+    MOODS_ID = read_file_to_list("moods_id")
+    MOODS_NAME = read_file_to_list("moods_name")
+    MOODS_IMAGE = []
+
+    return gen_content_detail(MOODS_ID, MOODS_NAME, MOODS_IMAGE)
+
+def gen_content_detail(ID, NAME, IMAGE):
     genres_content = []
 
     for index, id in enumerate(ID):
