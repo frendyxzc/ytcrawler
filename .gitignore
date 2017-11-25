@@ -1,1 +1,3 @@
 .idea
+/gen/*.pyc
+/gen/*.json
