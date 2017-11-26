@@ -15,112 +15,41 @@ def gen_default_config():
 Home
 """
 
-HOME_CONTENT_ID = "PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI"
-HOME_CONTENT_NAME = "HOT"
-HOME_CONTENT_IMAGE = ""
-HOME_CONTENT_VIEW_TYPE = "0"
-HOME_CONTENT_ACTION_TYPE = "1"
-HOME_CONTENT_DATA_TYPE = "0"
-HOME_CONTENT_ITEM_NUM = "5"
-
 def gen_home():
     home = {}
-
-    home["banner"] = gen_home_detail(
-        HOME_CONTENT_ID, HOME_CONTENT_NAME, HOME_CONTENT_IMAGE,
-        HOME_CONTENT_VIEW_TYPE, HOME_CONTENT_ACTION_TYPE,
-        HOME_CONTENT_DATA_TYPE, HOME_CONTENT_ITEM_NUM)
-    home["menu"] = gen_home_detail(
-        HOME_CONTENT_ID, HOME_CONTENT_NAME, HOME_CONTENT_IMAGE,
-        HOME_CONTENT_VIEW_TYPE, HOME_CONTENT_ACTION_TYPE,
-        HOME_CONTENT_DATA_TYPE, HOME_CONTENT_ITEM_NUM)
-    home["content"] = gen_home_detail(
-        HOME_CONTENT_ID, HOME_CONTENT_NAME, HOME_CONTENT_IMAGE,
-        HOME_CONTENT_VIEW_TYPE, HOME_CONTENT_ACTION_TYPE,
-        HOME_CONTENT_DATA_TYPE, HOME_CONTENT_ITEM_NUM)
+    home["content"] = gen_home_detail("home_content")
 
     return home
 
-def gen_home_detail(ID, NAME, IMAGE, VIEW_TYPE, ACTION_TYPE, DATA_TYPE, ITEM_NUM):
+def gen_home_detail(file_name):
     home_content = []
 
-    contents_id = ID.split(",")
-    contents_name = NAME.split(",")
-    contents_image = IMAGE.split(",")
-    contents_view_type = VIEW_TYPE.split(",")
-    contents_action_type = ACTION_TYPE.split(",")
-    contents_data_type = DATA_TYPE.split(",")
-    contents_item_num = ITEM_NUM.split(",")
+    file = "./data/" + file_name
+    content = open(file)
 
-    for index, id in enumerate(contents_id):
+    for line in content:
+        data = line.replace("\n", "").split(",")
         object = {}
-        object["id"] = contents_id[index]
-        object["name"] = contents_name[index]
-        object["image"] = contents_image[index]
-        object["viewType"] = contents_view_type[index]
-        object["actionType"] = contents_action_type[index]
-        object["dataType"] = contents_data_type[index]
-        object["itemNum"] = contents_item_num[index]
+        object["id"] = data[0]
+        object["name"] = data[1]
+        object["dataType"] = data[2]
+        object["maxNum"] = data[3]
+        object["itemNum"] = data[4]
+        object["image"] = data[5]
+        object["viewType"] = data[6]
+        object["actionType"] = data[7]
         home_content.append(object)
 
     return home_content
 
 
-"""
-Genres
-"""
-
-def gen_genres():
-    GENRES_ID = read_file_to_list("genres_id")
-    GENRES_NAME = read_file_to_list("genres_name")
-    GENRES_IMAGE = []
-
-    return gen_content_detail(GENRES_ID, GENRES_NAME, GENRES_IMAGE)
-
-"""
-Artists
-"""
-
-def gen_artists():
-    ARTISTS_ID = read_file_to_list("artists_id")
-    ARTISTS_NAME = read_file_to_list("artists_name")
-    ARTISTS_IMAGE = []
-
-    return gen_content_detail(ARTISTS_ID, ARTISTS_NAME, ARTISTS_IMAGE)
-
-"""
-Activities
-"""
-
-def gen_activities():
-    ACTIVITIES_ID = read_file_to_list("activities_id")
-    ACTIVITIES_NAME = read_file_to_list("activities_name")
-    ACTIVITIES_IMAGE = []
-
-    return gen_content_detail(ACTIVITIES_ID, ACTIVITIES_NAME, ACTIVITIES_IMAGE)
-
-"""
-Moods
-"""
-
-def gen_moods():
-    MOODS_ID = read_file_to_list("moods_id")
-    MOODS_NAME = read_file_to_list("moods_name")
-    MOODS_IMAGE = []
-
-    return gen_content_detail(MOODS_ID, MOODS_NAME, MOODS_IMAGE)
-
-def gen_content_detail(ID, NAME, IMAGE):
+def gen_content_detail(ID, NAME):
     genres_content = []
 
     for index, id in enumerate(ID):
         object = {}
         object["id"] = ID[index]
         object["name"] = NAME[index]
-        if index < len(IMAGE):
-            object["image"] = IMAGE[index]
-        else:
-            object["image"] = ""
         genres_content.append(object)
 
     return genres_content
@@ -136,26 +65,56 @@ def gen_list():
     all_list = {}
 
     list = PLAY_LIST.split(",")
-    all_list["playlist"] = gen_play_list(list)
-
-    # key必须对应home content里的id
-    all_list["genres"] = gen_genres()
-    all_list["artists"] = gen_artists()
-    all_list["activities"] = gen_activities()
-    all_list["moods"] = gen_moods()
+    # dataType 0
+    all_list["menuList"] = gen_menu_list("menu_list")
+    # dataType 1
+    all_list["playList"] = gen_play_list(list)
+    all_list["menuItem"] = gen_menu_item()
 
     return all_list
 
-def gen_play_list(LIST):
+def gen_play_list(LIST_ID):
     play_list = []
 
-    for list in LIST:
+    for id in LIST_ID:
         object = {}
-        object[list] = read_file(list)
+        object["id"] = id
+        object["list"] = read_file(id)
         play_list.append(object)
 
     return play_list
 
+def gen_menu_list(file_name):
+    menu_list = []
+
+    file = "./data/" + file_name
+    content = open(file)
+
+    for line in content:
+        data = line.replace("\n", "").split(",")
+        ID = read_file_to_list(data[0] + "_id")
+        NAME = read_file_to_list(data[0] + "_name")
+
+        object = {}
+        object["id"] = data[0]
+        object["dataType"] = data[1]
+        object["list"] = gen_content_detail(ID, NAME)
+        menu_list.append(object)
+
+    return menu_list
+
+def gen_menu_item():
+    MENU_ITEM_LIST = "banner_item"
+    LIST = MENU_ITEM_LIST.split(",")
+    menu_item_list = []
+
+    for list_file in LIST:
+        object = {}
+        object["id"] = list_file.replace("_item", "")
+        object["items"] = read_menu_item(list_file)
+        menu_item_list.append(object)
+
+    return menu_item_list
 
 """
 Read File
@@ -174,5 +133,21 @@ def read_file_to_list(file_name):
 
     for line in content:
         list.append(line.replace("\n", ""))
+
+    return list
+
+def read_menu_item(file_name):
+    list = []
+    file = "./data/" + file_name
+    content = open(file)
+
+    for line in content:
+        data = line.replace("\n", "").split(",")
+        object = {}
+        object["id"] = data[0]
+        object["name"] = data[1]
+        object["image"] = data[2]
+        object["dataType"] = data[3]
+        list.append(object)
 
     return list
