@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 import json
 
+"""
+DATA TYPE: 
+    0 - menu list
+    1 - play list
+    2 - menu item
+    3 - self
+"""
+
 def gen_default_config():
     ret = {}
 
@@ -17,42 +25,9 @@ Home
 
 def gen_home():
     home = {}
-    home["content"] = gen_home_detail("home_content")
+    home["content"] = read_home_detail("home_content")
 
     return home
-
-def gen_home_detail(file_name):
-    home_content = []
-
-    file = "./data/" + file_name
-    content = open(file)
-
-    for line in content:
-        data = line.replace("\n", "").split(",")
-        object = {}
-        object["id"] = data[0]
-        object["name"] = data[1]
-        object["dataType"] = data[2]
-        object["maxNum"] = data[3]
-        object["itemNum"] = data[4]
-        object["image"] = data[5]
-        object["viewType"] = data[6]
-        object["actionType"] = data[7]
-        home_content.append(object)
-
-    return home_content
-
-
-def gen_content_detail(ID, NAME):
-    genres_content = []
-
-    for index, id in enumerate(ID):
-        object = {}
-        object["id"] = ID[index]
-        object["name"] = NAME[index]
-        genres_content.append(object)
-
-    return genres_content
 
 
 """
@@ -69,6 +44,7 @@ def gen_list():
     all_list["menuList"] = gen_menu_list("menu_list")
     # dataType 1
     all_list["playList"] = gen_play_list(list)
+    # dataType 2
     all_list["menuItem"] = gen_menu_item()
 
     return all_list
@@ -84,6 +60,11 @@ def gen_play_list(LIST_ID):
 
     return play_list
 
+
+"""
+Menu List
+"""
+
 def gen_menu_list(file_name):
     menu_list = []
 
@@ -97,11 +78,27 @@ def gen_menu_list(file_name):
 
         object = {}
         object["id"] = data[0]
-        object["dataType"] = data[1]
-        object["list"] = gen_content_detail(ID, NAME)
+        object["list"] = gen_content_detail(ID, NAME, data[1])
         menu_list.append(object)
 
     return menu_list
+
+def gen_content_detail(ID, NAME, dataType):
+    detail = []
+
+    for index, id in enumerate(ID):
+        object = {}
+        object["id"] = ID[index]
+        object["name"] = NAME[index]
+        object["dataType"] = dataType
+        detail.append(object)
+
+    return detail
+
+
+"""
+Menu Item
+"""
 
 def gen_menu_item():
     MENU_ITEM_LIST = "banner_item"
@@ -151,3 +148,24 @@ def read_menu_item(file_name):
         list.append(object)
 
     return list
+
+def read_home_detail(file_name):
+    home_content = []
+
+    file = "./data/" + file_name
+    content = open(file)
+
+    for line in content:
+        data = line.replace("\n", "").split(",")
+        object = {}
+        object["id"] = data[0]
+        object["name"] = data[1]
+        object["dataType"] = data[2]
+        object["maxNum"] = data[3]
+        object["itemNum"] = data[4]
+        object["image"] = data[5]
+        object["viewType"] = data[6]
+        object["actionType"] = data[7]
+        home_content.append(object)
+
+    return home_content
