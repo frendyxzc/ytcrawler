@@ -5,12 +5,7 @@ def gen_default_config():
     ret = {}
 
     ret["home"] = gen_home()
-    # key必须对应home content里的id
-    ret["genres"] = gen_genres()
-    ret["artists"] = gen_artists()
-    ret["activities"] = gen_activities()
-    ret["moods"] = gen_moods()
-    # 相关YT播放列表
+    # 相关列表
     ret["list"] = gen_list()
 
     return ret
@@ -25,6 +20,7 @@ HOME_CONTENT_NAME = "HOT"
 HOME_CONTENT_IMAGE = ""
 HOME_CONTENT_VIEW_TYPE = "0"
 HOME_CONTENT_ACTION_TYPE = "1"
+HOME_CONTENT_DATA_TYPE = "0"
 HOME_CONTENT_ITEM_NUM = "5"
 
 def gen_home():
@@ -32,17 +28,20 @@ def gen_home():
 
     home["banner"] = gen_home_detail(
         HOME_CONTENT_ID, HOME_CONTENT_NAME, HOME_CONTENT_IMAGE,
-        HOME_CONTENT_VIEW_TYPE, HOME_CONTENT_ACTION_TYPE, HOME_CONTENT_ITEM_NUM)
+        HOME_CONTENT_VIEW_TYPE, HOME_CONTENT_ACTION_TYPE,
+        HOME_CONTENT_DATA_TYPE, HOME_CONTENT_ITEM_NUM)
     home["menu"] = gen_home_detail(
         HOME_CONTENT_ID, HOME_CONTENT_NAME, HOME_CONTENT_IMAGE,
-        HOME_CONTENT_VIEW_TYPE, HOME_CONTENT_ACTION_TYPE, HOME_CONTENT_ITEM_NUM)
+        HOME_CONTENT_VIEW_TYPE, HOME_CONTENT_ACTION_TYPE,
+        HOME_CONTENT_DATA_TYPE, HOME_CONTENT_ITEM_NUM)
     home["content"] = gen_home_detail(
         HOME_CONTENT_ID, HOME_CONTENT_NAME, HOME_CONTENT_IMAGE,
-        HOME_CONTENT_VIEW_TYPE, HOME_CONTENT_ACTION_TYPE, HOME_CONTENT_ITEM_NUM)
+        HOME_CONTENT_VIEW_TYPE, HOME_CONTENT_ACTION_TYPE,
+        HOME_CONTENT_DATA_TYPE, HOME_CONTENT_ITEM_NUM)
 
     return home
 
-def gen_home_detail(ID, NAME, IMAGE, VIEW_TYPE, ACTION_TYPE, ITEM_NUM):
+def gen_home_detail(ID, NAME, IMAGE, VIEW_TYPE, ACTION_TYPE, DATA_TYPE, ITEM_NUM):
     home_content = []
 
     contents_id = ID.split(",")
@@ -50,6 +49,7 @@ def gen_home_detail(ID, NAME, IMAGE, VIEW_TYPE, ACTION_TYPE, ITEM_NUM):
     contents_image = IMAGE.split(",")
     contents_view_type = VIEW_TYPE.split(",")
     contents_action_type = ACTION_TYPE.split(",")
+    contents_data_type = DATA_TYPE.split(",")
     contents_item_num = ITEM_NUM.split(",")
 
     for index, id in enumerate(contents_id):
@@ -59,6 +59,7 @@ def gen_home_detail(ID, NAME, IMAGE, VIEW_TYPE, ACTION_TYPE, ITEM_NUM):
         object["image"] = contents_image[index]
         object["viewType"] = contents_view_type[index]
         object["actionType"] = contents_action_type[index]
+        object["dataType"] = contents_data_type[index]
         object["itemNum"] = contents_item_num[index]
         home_content.append(object)
 
@@ -129,12 +130,21 @@ def gen_content_detail(ID, NAME, IMAGE):
 Play List
 """
 
-PLAY_LIST = "PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI,PLFgquLnL59akA2PflFpeQG9L01VFg90wS"
+PLAY_LIST = "PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI"
 
 def gen_list():
-    list = PLAY_LIST.split(",")
+    all_list = {}
 
-    return gen_play_list(list)
+    list = PLAY_LIST.split(",")
+    all_list["playlist"] = gen_play_list(list)
+
+    # key必须对应home content里的id
+    all_list["genres"] = gen_genres()
+    all_list["artists"] = gen_artists()
+    all_list["activities"] = gen_activities()
+    all_list["moods"] = gen_moods()
+
+    return all_list
 
 def gen_play_list(LIST):
     play_list = []
