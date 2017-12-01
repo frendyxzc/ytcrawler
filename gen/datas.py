@@ -12,12 +12,57 @@ DATA TYPE:
 def gen_default_config():
     ret = {}
 
-    ret["home"] = gen_home()
+    #ret["home"] = gen_home()
     # 相关列表
-    ret["list"] = gen_list()
+    #ret["list"] = gen_list()
+
+
+    ret["lists"] = read__list("tab")
+    ret["banners"] = read__list("banner")
 
     return ret
 
+def read__list(file_name):
+    home_content = []
+
+    other = read__otherlist("other")
+
+    file = "./data/" + file_name
+    content = open(file)
+
+    for line in content:
+        data = line.replace("\n", "").split(",")
+        object = {}
+        object["tab_name"] = data[0]
+        object["tab_type"] = data[1]
+        object["tab_pattern"] = data[2]
+        object["tab_row"] = data[3]
+        object["content_num"] = data[4]
+        object["tab_order"] = data[5]
+        object["song_limit"] = data[6]
+        object["channel_id"] = data[7]
+        object["channel_otherlist"] = other
+        home_content.append(object)
+
+    return home_content
+
+
+def read__otherlist(file_name):
+    home_content = []
+
+    file = "./data/" + file_name
+    content = open(file)
+
+    for line in content:
+        data = line.replace("\n", "").split(",")
+        object = {}
+        object["list_name"] = data[0]
+        object["list_order"] = data[1]
+        object["list_id"] = data[2]
+        object["list_cover"] = data[3]
+        home_content.append(object)
+
+    return home_content
 
 """
 Home

@@ -5,7 +5,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-DEFAULT = "陈奕迅,孙燕姿,周杰伦"
+DEFAULT = "BEYONCÉ"
 
 ######
 
