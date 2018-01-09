@@ -42,6 +42,7 @@ def read__list(file_name):
         object["song_limit"] = data[6]
         object["channel_id"] = data[7]
         object["channel_otherlist"] = other
+        object["banner_cover"] = "http://pic7.nipic.com/20100518/3409334_031036048098_2.jpg"
         home_content.append(object)
 
     return home_content
