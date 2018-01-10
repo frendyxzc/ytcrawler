@@ -6,6 +6,11 @@ import urllib
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+def read_from_file(file_name):
+	file = "/Users/frendy/Desktop/github/ytcrawler/data/singerlist/" + file_name
+	f = open(file, 'r')
+	return f
+
 def save_img(img_url,file_name, file_path='images'):
     #保存图片到磁盘文件夹 file_path中，默认为当前脚本运行目录下的 book\img文件夹
     try:
@@ -25,5 +30,11 @@ def save_img(img_url,file_name, file_path='images'):
         print '错误 ：',e
 
 if __name__ == '__main__':
-    img_url = 'https://yt3.ggpht.com/-XGJxclN0KP4/AAAAAAAAAAI/AAAAAAAAAAA/HdNB8DsBwnA/s176-c-k-no-mo-rj-c0xffffff/photo.jpg'
-    save_img(img_url,'name')
+    FILE = "singer_icon.txt"
+    content = read_from_file(FILE)
+
+    for line in content.readlines():
+        info = line.split(",")
+        #print info[1].replace('\r\n', '')
+        print info[0]
+        save_img(info[1].replace('\r\n', ''), info[0])
